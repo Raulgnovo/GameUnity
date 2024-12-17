@@ -22,6 +22,17 @@ public class DialogueControl : MonoBehaviour
     private string[] sentences;
 
 
+public static DialogueControl instance;
+
+//Awake é chamado antes de todos os Start() na hierarquia de execução de script
+private void Awake()
+{
+    instance = this;
+
+}
+
+
+
     void Start()
     {
 
@@ -41,9 +52,29 @@ public class DialogueControl : MonoBehaviour
             yield return new WaitForSeconds(typingSpeed);
         }
     }
+
+
     //pular para a proxima fala
     public void NextSentence()
     {
+
+        if(speechText.text == sentences[index])
+        {
+            if(index < sentences.Length - 1)
+            {
+                index++;
+                speechText.text = "";
+                StartCoroutine(TypeSentence());
+            }
+            else // quando terminar o texto
+            {
+                speechText.text = "";
+                index = 0;
+                dialogueObj.SetActive(false);
+                sentences = null;
+            }
+        }
+
 
     }
 
