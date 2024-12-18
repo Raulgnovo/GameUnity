@@ -7,45 +7,40 @@ public class DialogueControl : MonoBehaviour
 {
     [Header("Components")]
     public GameObject dialogueObj; // janela do dialogo
-    public Image profileSprite; //sprit perfil
-    public Text speechText;// texto da fala
-    public Text actorNameText;// nome do npc
-
-
+    public Image profileSprite; // sprite do perfil
+    public Text speechText; // texto da fala
+    public Text actorNameText; // nome do npc
 
     [Header("Settings")]
-    public float typingSpeed; //velocidade fala
+    public float typingSpeed; // velocidade da fala
 
-    //Variaveis de controle
-    private bool isShowing; // janela visivel?
-    private int index; //index das sentenças
+    // Variáveis de controle
+    public bool isShowing; // janela visível?
+    private int index; // índice das sentenças
     private string[] sentences;
 
+    public static DialogueControl instance;
 
-public static DialogueControl instance;
-
-//Awake é chamado antes de todos os Start() na hierarquia de execução de script
-private void Awake()
-{
-    instance = this;
-
-}
-
-
-
-    void Start()
+    // Awake é chamado antes de todos os Start() na hierarquia de execução de script
+    private void Awake()
     {
-
+        instance = this;
     }
 
-
-    void Update()
+    private void Start()
     {
-
+        isShowing = false;
+        index = 0;
     }
 
-    IEnumerator TypeSentence()
+    private void Update()
     {
+        // Atualizações relacionadas ao diálogo podem ser implementadas aqui.
+    }
+
+    private IEnumerator TypeSentence()
+    {
+        speechText.text = ""; // Limpa o texto antes de digitar
         foreach (char letter in sentences[index].ToCharArray())
         {
             speechText.text += letter;
@@ -53,44 +48,47 @@ private void Awake()
         }
     }
 
-
-    //pular para a proxima fala
+    // Pular para a próxima fala
     public void NextSentence()
     {
-
-        if(speechText.text == sentences[index])
+        if (speechText.text == sentences[index])
         {
-            if(index < sentences.Length - 1)
+            if (index < sentences.Length - 1)
             {
                 index++;
                 speechText.text = "";
                 StartCoroutine(TypeSentence());
             }
-            else // quando terminar o texto
+            else // Quando terminar o texto
             {
                 speechText.text = "";
                 index = 0;
                 dialogueObj.SetActive(false);
                 sentences = null;
+                isShowing = false; // Atualiza o estado de visibilidade
             }
         }
-
-
     }
 
-    //Chamar a fala do npc
+    // Chamar a fala do NPC
     public void Speech(string[] txt)
     {
-        if (!isShowing)
+        if (txt == null || txt.Length == 0)
         {
-            dialogueObj.SetActive(true);
-            sentences = txt;
-            StartCoroutine(TypeSentence());
-            isShowing = true;
+            Debug.LogWarning("Nenhuma fala foi fornecida!");
+            return;
         }
 
+        if (isShowing)
+        {
+            StopAllCoroutines();
+            speechText.text = "";
+        }
+
+        dialogueObj.SetActive(true);
+        sentences = txt;
+        index = 0; // Garante que o índice comece do início
+        StartCoroutine(TypeSentence());
+        isShowing = true;
     }
-
-
-
 }

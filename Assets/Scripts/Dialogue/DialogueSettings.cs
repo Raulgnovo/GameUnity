@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-
-[CreateAssetMenu(fileName= "New Dialogue", menuName = "New Dialogue/Dialogue")]
+[CreateAssetMenu(fileName = "New Dialogue", menuName = "Dialogue")]
 public class DialogueSettings : ScriptableObject
-
 {
     [Header("Settings")]
     public GameObject actor;
 
     [Header("Dialogue")]
     public Sprite speakerSprite;
-    public string sentence;
+    public string sentence; // Frase genérica para idiomas
 
     public List<Sentences> dialogues = new List<Sentences>();
-
-
 }
 
 [System.Serializable]
@@ -26,7 +22,6 @@ public class Sentences
     public string actorName;
     public Sprite profile;
     public Languages sentence;
-
 }
 
 [System.Serializable]
@@ -34,8 +29,7 @@ public class Languages
 {
     public string portuguese;
     public string english;
-    public string spanish; 
-
+    public string spanish;
 }
 
 #if UNITY_EDITOR
@@ -46,29 +40,39 @@ public class BuilderEditor : Editor
     {
         DrawDefaultInspector();
 
-
         DialogueSettings ds = (DialogueSettings)target;
 
-        Languages l = new Languages();
-        l.portuguese = ds.sentence;
-
+        // Criando um novo objeto Sentences
         Sentences s = new Sentences();
         s.profile = ds.speakerSprite;
-        s.sentence = l;
+        s.actorName = ds.actor != null ? ds.actor.name : "Unknown Actor";
 
-
-        if(GUILayout.Button("Create Dialogue"))
+        // Configurando os idiomas
+        s.sentence = new Languages
         {
-        if(ds.sentence != "")
-            {
-                ds.dialogues.Add(s);
+            portuguese = ds.sentence, // Considerando que a frase seja em português por padrão
+            english = string.Empty,
+            spanish = string.Empty
+        };
 
-                ds.speakerSprite = null;
-                ds.sentence = "";
+        if (GUILayout.Button("Create Dialogue"))
+        {
+            // Validação de entrada
+            if (string.IsNullOrEmpty(ds.sentence) || ds.speakerSprite == null)
+            {
+                Debug.LogWarning("Campos obrigatórios não preenchidos.");
+                return;
             }
+
+            // Adiciona diálogo e reseta os campos
+            ds.dialogues.Add(s);
+
+            ds.speakerSprite = null;
+            ds.sentence = "";
+
+            // Marca o ScriptableObject como alterado
+            EditorUtility.SetDirty(ds);
         }
     }
-
 }
-
 #endif

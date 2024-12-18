@@ -16,9 +16,39 @@ MonoBehaviour:
   speakerSprite: {fileID: -8091321643688609963, guid: 33e2832d050f456438a8a44bdc54398f, type: 3}
   sentence: 
   dialogues:
+  - actorName: moca
+    profile: {fileID: 0}
+    sentence:
+      portuguese: "ol\xE1 jovem forasteiro, tudo bem com voc\xEA?"
+      english: 
+      spanish: 
+  - actorName: hero
+    profile: {fileID: 0}
+    sentence:
+      portuguese: tudo bem
+      english: 
+      spanish: 
+  - actorName: moca
+    profile: {fileID: 0}
+    sentence:
+      portuguese: tudo e voce
+      english: 
+      spanish: 
+  - actorName: hero
+    profile: {fileID: 0}
+    sentence:
+      portuguese: estou bem
+      english: 
+      spanish: 
   - actorName: 
     profile: {fileID: 0}
     sentence:
-      portuguese: 
+      portuguese: "ol\xE1"
+      english: 
+      spanish: 
+  - actorName: 
+    profile: {fileID: 0}
+    sentence:
+      portuguese: "ol\xE1"
       english: 
       spanish: 
